@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Threading;
 
 namespace Maze_Generator
 {
@@ -58,13 +55,13 @@ namespace Maze_Generator
                 //PrintMazeCommandLine(maze);
             }
 
-            PrintMazePNG(maze);
+            Common.PrintMazePNG(maze, "PrimsMaze");
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
         }
 
         private static void AddFrontier(int x, int y, int[,] grid, List<int[]> frontier)
         {
-            if (IsInBounds(x, y, grid))
+            if (Common.IsInBounds(x, y, grid))
             {
                 if ((grid[x, y] & FRONTIER) != 0)
                 {
@@ -85,13 +82,7 @@ namespace Maze_Generator
             AddFrontier(x, y - 1, grid, frontier);
             AddFrontier(x, y + 1, grid, frontier);
         }
-
-        private static bool IsInBounds(int x, int y, int[,] grid)
-        {
-            return x >= 0 && x <= grid.GetLength(0) - 1 &&
-                   y >= 0 && y <= grid.GetLength(1) - 1;
-        }
-
+        
         // Returns all the “in” neighbors of a given frontier cell
         private static ArrayList GetInNeighbours(int x, int y, int[,] grid)
         {
@@ -108,7 +99,7 @@ namespace Maze_Generator
 
         private static bool IsIn(int x, int y, int[,] grid)
         {
-            return IsInBounds(x, y, grid) && (grid[x, y] & IN) != 0;
+            return Common.IsInBounds(x, y, grid) && (grid[x, y] & IN) != 0;
         }
 
         private static int GetDirection(int srcX, int srcY, int destX, int destY)
@@ -124,77 +115,10 @@ namespace Maze_Generator
         private static int[] GetRandomFrontier(List<int[]> frontier, Random rand)
         {
             var i = rand.Next(frontier.Count);
-            var cell = (int[])frontier[i];
+            var cell = frontier[i];
             frontier.RemoveAt(i);
             return cell;
         }
 
-        private static void PrintMazeCommandLine(int[,] maze)
-        {
-            Console.Clear();
-
-            Console.WriteLine(" " + new string('_', maze.GetLength(0) * 2 - 1));
-            for (var y = 0; y < maze.GetLength(1); y++)
-            {
-                Console.Write("|");
-                for (var x = 0; x < maze.GetLength(0); x++)
-                {
-                    // Bottom wall
-                    Console.Write((maze[x, y] & S) != 0 ? " " : "_");
-
-                    if ((maze[x, y] & E) != 0)
-                    {
-                        // Connecting bottom wall
-                        Console.Write(((maze[x, y] | maze[x + 1, y]) & S) == 0 ? "_" : " ");
-                    }
-                    else
-                    {
-                        // Right wall
-                        Console.Write("|");
-                    }
-                }
-
-                Console.WriteLine();
-            }
-        }
-
-        private static void PrintMazePNG(int[,] maze)
-        {
-            Bitmap mazeImage = new Bitmap(maze.GetLength(0) * 2 + 1, maze.GetLength(1) * 2 + 1, PixelFormat.Format24bppRgb);
-
-            // Top border
-            for (int i = 0; i < mazeImage.Width; i++)
-            {
-                mazeImage.SetPixel(i, 0, Color.Black);
-            }
-
-            for (var x = 0; x < maze.GetLength(0); x++)
-            {
-                var cellX = 2 * x + 1;
-
-                // Left border
-                mazeImage.SetPixel(cellX, 0, Color.Black);
-
-                for (var y = 0; y < maze.GetLength(1); y++)
-                {
-                    var cellY = 2 * y + 1;
-
-                    // Cell
-                    mazeImage.SetPixel(cellX, cellY, Color.White);
-
-                    // Right wall
-                    mazeImage.SetPixel(cellX + 1, cellY, (maze[x, y] & E) == 0 ? Color.Black : Color.White);
-
-                    // Bottom wall
-                    mazeImage.SetPixel(cellX, cellY + 1, (maze[x, y] & S) == 0 ? Color.Black : Color.White);
-
-                    // Bottom Right wall
-                    mazeImage.SetPixel(cellX + 1, cellY + 1, Color.Black);
-                }
-
-            }
-
-            mazeImage.Save("PrimsMaze.png", ImageFormat.Png);
-        }
     }
 }

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.cs" />
     <Compile Include="DivisionMaze.cs" />
     <Compile Include="HuntAndKillMaze.cs" />
     <Compile Include="PrimsMaze.cs" />

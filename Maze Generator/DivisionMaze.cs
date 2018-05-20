@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Maze_Generator
 {
@@ -32,8 +26,8 @@ namespace Maze_Generator
             var maze = CreateEmptyMaze(width, height);
             DivideMaze(maze, 0, 0, width, height, ChooseDivision(width, height));
 
-            PrintMazeCommandLine(maze);
-            PrintMazePNG(maze);
+            Common.PrintMazeCommandLine(maze);
+            Common.PrintMazePNG(maze, "DivisionMaze");
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
         }
 
@@ -59,7 +53,7 @@ namespace Maze_Generator
                 return;
             }
 
-            PrintMazeCommandLine(maze);
+            Common.PrintMazeCommandLine(maze);
             Thread.Sleep(100);
 
             var isHorizontal = (orientation == HORIZONTAL);
@@ -117,72 +111,5 @@ namespace Maze_Generator
             }
         }
         
-        private static void PrintMazeCommandLine(int[,] maze)
-        {
-            Console.Clear();
-
-            Console.WriteLine(" " + new string('_', maze.GetLength(0) * 2 - 1));
-            for (var y = 0; y < maze.GetLength(1); y++)
-            {
-                Console.Write("|");
-                for (var x = 0; x < maze.GetLength(0); x++)
-                {
-                    // Bottom wall
-                    Console.Write((maze[x, y] & S) != 0 ? " " : "_");
-
-                    if ((maze[x, y] & E) != 0)
-                    {
-                        // Connecting bottom wall
-                        Console.Write(((maze[x, y] | maze[x + 1, y]) & S) == 0 ? "_" : " ");
-                    }
-                    else
-                    {
-                        // Right wall
-                        Console.Write("|");
-                    }
-                }
-
-                Console.WriteLine();
-            }
-        }
-
-        private static void PrintMazePNG(int[,] maze)
-        {
-            Bitmap mazeImage = new Bitmap(maze.GetLength(0) * 2 + 1, maze.GetLength(1) * 2 + 1, PixelFormat.Format24bppRgb);
-
-            // Top border
-            for (int i = 0; i < mazeImage.Width; i++)
-            {
-                mazeImage.SetPixel(i, 0, Color.Black);
-            }
-
-            for (var x = 0; x < maze.GetLength(0); x++)
-            {
-                var cellX = 2 * x + 1;
-
-                // Left border
-                mazeImage.SetPixel(cellX, 0, Color.Black);
-
-                for (var y = 0; y < maze.GetLength(1); y++)
-                {
-                    var cellY = 2 * y + 1;
-
-                    // Cell
-                    mazeImage.SetPixel(cellX, cellY, Color.White);
-
-                    // Right wall
-                    mazeImage.SetPixel(cellX + 1, cellY, (maze[x, y] & E) == 0 ? Color.Black : Color.White);
-
-                    // Bottom wall
-                    mazeImage.SetPixel(cellX, cellY + 1, (maze[x, y] & S) == 0 ? Color.Black : Color.White);
-
-                    // Bottom Right wall
-                    mazeImage.SetPixel(cellX + 1, cellY + 1, Color.Black);
-                }
-
-            }
-
-            mazeImage.Save("DivisionMaze.png", ImageFormat.Png);
-        }
     }
 }
