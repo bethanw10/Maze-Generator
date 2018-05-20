@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Maze_Generator
 {
@@ -51,8 +52,8 @@ namespace Maze_Generator
                 // Mark cell as IN
                 MarkAsIn(x, y, maze, frontier);
 
-                //Thread.Sleep(10);
-                //PrintMazeCommandLine(maze);
+                Thread.Sleep(10);
+                Common.PrintMazeCommandLine(maze);
             }
 
             Common.PrintMazePNG(maze, "PrimsMaze");
@@ -88,7 +89,6 @@ namespace Maze_Generator
         {
             ArrayList neighbours = new ArrayList();
             
-            // Check left
             if (IsIn(x - 1, y, grid)) neighbours.Add(new int[] { x - 1, y });
             if (IsIn(x + 1, y, grid)) neighbours.Add(new int[] { x + 1, y });
             if (IsIn(x, y - 1, grid)) neighbours.Add(new int[] { x, y - 1 });

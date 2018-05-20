@@ -25,7 +25,9 @@ namespace Maze_Generator
             {N, S}, {E, W}, {S, N}, {W, E}
         };
 
-        private const int THREAD_SLEEP = 1;
+        private const int THREAD_SLEEP = 25;
+
+        private static int huntStart;
 
         public static void CreateMaze(int width, int height)
         {
@@ -35,6 +37,7 @@ namespace Maze_Generator
             var maze = new int[width, height];
             var x = rand.Next(width);
             var y = rand.Next(height);
+            huntStart = x;
 
             do
             {
@@ -74,6 +77,9 @@ namespace Maze_Generator
                     maze[x, y] |= direction;
                     maze[nextX, nextY] |= opposite[direction];
 
+                    // Record highest point reached as the new hunt start point
+                    if (nextY < huntStart) huntStart = nextY;
+
                     return new int[] { nextX, nextY };
                 }
             }
@@ -84,15 +90,29 @@ namespace Maze_Generator
         // Looks for first empty cell with at least one visited neighbour
         private static int[] Hunt(int[,] maze, Random rand)
         {
-            for (int y = 0; y < maze.GetLength(1); y++)
+            for (int y = huntStart; y < maze.GetLength(1); y++)
             {
+                var visitedCellCount = 0;
+
                 for (int x = 0; x < maze.GetLength(0); x++)
                 {
                     Common.PrintMazeCommandLine(maze, x, y, '?');
                     Thread.Sleep(THREAD_SLEEP / 2);
 
-                    // Ignore unvisited cells
-                    if (maze[x, y] != 0) continue;
+                    // Ignore visited cells
+                    if (maze[x, y] != 0)
+                    {
+                        visitedCellCount++;
+
+                        // If entire line has been visited
+                        if (x == maze.GetLength(0) - 1 && visitedCellCount == maze.GetLength(0))
+                        {
+                            // Record as new row start to avoid rechecking complete rows
+                            huntStart = y + 1;
+                        }
+
+                        continue;
+                    }
 
                     // Get list of all visited neighbours
                     var neighbours = new List<int>();
@@ -102,6 +122,7 @@ namespace Maze_Generator
                     if (y + 1 < maze.GetLength(1) && (maze[x, y + 1] != 0)) neighbours.Add(S);
 
                     if (neighbours.Count == 0) continue;
+
                     var direction = neighbours[rand.Next(neighbours.Count)];
 
                     var newX = x + DX[direction];

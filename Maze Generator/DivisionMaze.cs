@@ -5,9 +5,6 @@ namespace Maze_Generator
 {
     class DivisionMaze
     {
-        private const int HORIZONTAL = 0;
-        private const int VERTICAL = 1;
-
         private const int E = 1 << 1;
         private const int S = 1 << 2;
 
@@ -46,7 +43,7 @@ namespace Maze_Generator
             return maze;
         }
 
-        private static void DivideMaze(int[,] maze, int x, int y, int width, int height, int orientation)
+        private static void DivideMaze(int[,] maze, int x, int y, int width, int height, Orientation orientation)
         {
             if (width < 2 || height < 2)
             {
@@ -56,7 +53,7 @@ namespace Maze_Generator
             Common.PrintMazeCommandLine(maze);
             Thread.Sleep(100);
 
-            var isHorizontal = (orientation == HORIZONTAL);
+            var isHorizontal = (orientation == Orientation.HORIZONTAL);
 
             // Choose random wall and hole
             var wallX = x + (isHorizontal ? 0 : rand.Next(width - 1));
@@ -95,19 +92,19 @@ namespace Maze_Generator
             DivideMaze(maze, newX, newY, newWidth, newHeight, ChooseDivision(newHeight, newWidth));
         }
 
-        private static int ChooseDivision(int width, int height)
+        private static Orientation ChooseDivision(int width, int height)
         {
             if (width < height)
             {
-                return HORIZONTAL;
+                return Orientation.HORIZONTAL;
             }
             else if (width > height)
             {
-                return VERTICAL;
+                return Orientation.VERTICAL;
             }
             else
             {
-                return rand.Next(2) == 0 ? VERTICAL : HORIZONTAL;
+                return rand.Next(2) == 0 ? Orientation.VERTICAL : Orientation.HORIZONTAL;
             }
         }
         
