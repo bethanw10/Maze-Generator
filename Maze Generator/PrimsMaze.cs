@@ -21,6 +21,8 @@ namespace Maze_Generator
 
         public static void CreateMaze(int width, int height)
         {
+            Console.Title = "Prims Algorithm Maze";
+
             var seed = Guid.NewGuid().GetHashCode();
             var rand = new Random(seed);
 
@@ -56,7 +58,7 @@ namespace Maze_Generator
                 Common.PrintMazeCommandLine(maze);
             }
 
-            Common.PrintMazePNG(maze, "PrimsMaze");
+            Common.PrintMazePNG(maze, "PrimsMaze", 5, 2);
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
         }
 

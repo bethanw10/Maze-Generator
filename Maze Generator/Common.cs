@@ -83,47 +83,55 @@ namespace Maze_Generator
             }
         }
         
-        public static void PrintMazePNG(int[,] maze, String filename, int cellSize = 1, int wallSize = 1)
+        public static void PrintMazePNG(int[,] maze, String filename, 
+                int cellSize = 1, int wallSize = 1,
+                Color? cell = null, Color? wall = null)
         {
+            // Default to black and white maze
+            Color cellColour = cell ?? Color.White;
+            Color wallColour = wall ?? Color.Black;
+
             Bitmap image = new Bitmap(
                 (maze.GetLength(0) * (cellSize + wallSize)) + wallSize, 
                 (maze.GetLength(1) * (cellSize + wallSize)) + wallSize, 
                 PixelFormat.Format24bppRgb);
 
             // Top-most wall
-            ColourArea(image, Color.DimGray,
+            ColourArea(image, wallColour,
                 0, 0, 
                 image.Width, wallSize);
 
 
             // Left-most wall
-            ColourArea(image, Color.DimGray,
+            ColourArea(image, wallColour,
                 0, 0,
                 wallSize, image.Height);
 
 
             for (var x = 0; x < maze.GetLength(0); x++)
             {
-                var cellX = (x * (cellSize + wallSize)) + wallSize;
-                var cellWallX = cellX + cellSize;
-
                 for (var y = 0; y < maze.GetLength(1); y++)
                 {
+                    // Coordinates for start of cell 
+                    var cellX = (x * (cellSize + wallSize)) + wallSize;
                     var cellY = (y * (cellSize + wallSize)) + wallSize;
+
+                    // Coordinates for start of wall
+                    var cellWallX = cellX + cellSize;
                     var cellWallY = cellY + cellSize;
 
                     // Cell
-                    ColourArea(image, Color.White, 
+                    ColourArea(image, cellColour, 
                         cellX, cellY, 
                         cellWallX, cellWallY);
 
                     // Right wall
-                    ColourArea(image, (maze[x, y] & E) == 0 ? Color.DimGray : Color.White,
+                    ColourArea(image, (maze[x, y] & E) == 0 ? wallColour : cellColour,
                         cellWallX, cellY,
                         cellWallX + wallSize, cellWallY);
 
                     // Bottom wall
-                    ColourArea(image, (maze[x, y] & S) == 0 ? Color.DimGray : Color.White,
+                    ColourArea(image, (maze[x, y] & S) == 0 ? wallColour : cellColour,
                         cellX, cellWallY, 
                         cellWallX, cellWallY + wallSize);
 

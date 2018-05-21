@@ -31,6 +31,8 @@ namespace Maze_Generator
 
         public static void CreateMaze(int width, int height)
         {
+            Console.Title = "Hunt And Kill Maze";
+
             int seed = DateTime.Now.Millisecond;
             var rand = new Random(seed);
 
@@ -59,7 +61,7 @@ namespace Maze_Generator
             Common.PrintMazeCommandLine(maze);
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
 
-            Common.PrintMazePNG(maze, "HuntAndKillMaze", 5, 3);
+            Common.PrintMazePNG(maze, "HuntAndKillMaze", 5, 2);
         }
 
         // Create path in a random direction. Returns null if there was no viable path to take

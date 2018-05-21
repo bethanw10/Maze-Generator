@@ -17,6 +17,8 @@ namespace Maze_Generator
 
         public static void CreateMaze(int width, int height)
         {
+            Console.Title = "Recursive Division Maze";
+
             var seed = Guid.NewGuid().GetHashCode();
             rand = new Random(seed);
 
@@ -24,7 +26,7 @@ namespace Maze_Generator
             DivideMaze(maze, 0, 0, width, height, ChooseDivision(width, height));
 
             Common.PrintMazeCommandLine(maze);
-            Common.PrintMazePNG(maze, "DivisionMaze");
+            Common.PrintMazePNG(maze, "DivisionMaze", 5, 2);
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
         }
 
@@ -89,7 +91,7 @@ namespace Maze_Generator
             var newY = isHorizontal ? wallY + 1: y;
             newWidth = isHorizontal ? width : x + width - wallX - 1;
             newHeight = isHorizontal ? y + height - wallY - 1 : height;
-            DivideMaze(maze, newX, newY, newWidth, newHeight, ChooseDivision(newHeight, newWidth));
+            DivideMaze(maze, newX, newY, newWidth, newHeight, ChooseDivision(newWidth, newHeight));
         }
 
         private static Orientation ChooseDivision(int width, int height)

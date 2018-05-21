@@ -24,27 +24,28 @@ namespace Maze_Generator
         private static readonly Dictionary<int, int> opposite = new Dictionary<int, int> {
             {N, S}, {E, W}, {S, N}, {W, E}
         };
-
-        private static Random rand;
-
+        
         public static void CreateMaze(int size) {
             CreateMaze(size, size);
         }
 
         public static void CreateMaze(int width, int height) {
+            Console.Title = "Recursive Backtracking Maze";
+
             int seed = DateTime.Now.Millisecond;
-            rand = new Random(seed);
+            Random rand = new Random(seed);
 
             var maze = new int[width, height];
-            CreatePathFrom(0, 0, maze);
+            CreatePathFrom(0, 0, maze, rand);
 
             Common.PrintMazeCommandLine(maze);
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
 
-            Common.PrintMazePNG(maze, "BacktrackerMaze");
+            Common.PrintMazePNG(maze, "BacktrackerMaze", 5, 2);
         }
 
-        private static void CreatePathFrom(int x, int y, int[,] maze) {
+        // Recursively draws paths. When a path can't continue it will 'backtrack'
+        private static void CreatePathFrom(int x, int y, int[,] maze, Random rand) {
             var directions = new[] {N, E, S, W}.OrderBy(n => rand.Next());
 
             foreach (var direction in directions) {
@@ -57,7 +58,7 @@ namespace Maze_Generator
 
                     Thread.Sleep(25);
                     Common.PrintMazeCommandLine(maze, nextX, nextY);
-                    CreatePathFrom(nextX, nextY, maze);
+                    CreatePathFrom(nextX, nextY, maze, rand);
                 }
             }
         }
