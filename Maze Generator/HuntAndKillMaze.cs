@@ -25,7 +25,7 @@ namespace Maze_Generator
             {N, S}, {E, W}, {S, N}, {W, E}
         };
 
-        private const int THREAD_SLEEP = 25;
+        private const int THREAD_SLEEP = 50;
 
         private static int huntStart;
 
@@ -59,7 +59,7 @@ namespace Maze_Generator
             Common.PrintMazeCommandLine(maze);
             Console.WriteLine($"{width} x {height} - Seed: {seed}");
 
-            Common.PrintMazePNG(maze, "HuntAndKillMaze", 3, 3);
+            Common.PrintMazePNG(maze, "HuntAndKillMaze", 5, 3);
         }
 
         // Create path in a random direction. Returns null if there was no viable path to take

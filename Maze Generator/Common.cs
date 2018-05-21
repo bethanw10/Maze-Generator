@@ -91,18 +91,21 @@ namespace Maze_Generator
                 PixelFormat.Format24bppRgb);
 
             // Top-most wall
-            ColourArea(image, Color.DarkGray,
-                0, 0, image.Width, wallSize);
+            ColourArea(image, Color.DimGray,
+                0, 0, 
+                image.Width, wallSize);
+
+
+            // Left-most wall
+            ColourArea(image, Color.DimGray,
+                0, 0,
+                wallSize, image.Height);
+
 
             for (var x = 0; x < maze.GetLength(0); x++)
             {
                 var cellX = (x * (cellSize + wallSize)) + wallSize;
                 var cellWallX = cellX + cellSize;
-
-                // Left-most wall
-                ColourArea(image, Color.DarkGray,
-                    cellX, 0, 
-                    cellWallX + wallSize, wallSize);
 
                 for (var y = 0; y < maze.GetLength(1); y++)
                 {
@@ -115,17 +118,17 @@ namespace Maze_Generator
                         cellWallX, cellWallY);
 
                     // Right wall
-                    ColourArea(image, (maze[x, y] & E) == 0 ? Color.DarkGray : Color.White,
+                    ColourArea(image, (maze[x, y] & E) == 0 ? Color.DimGray : Color.White,
                         cellWallX, cellY,
                         cellWallX + wallSize, cellWallY);
 
                     // Bottom wall
-                    ColourArea(image, (maze[x, y] & S) == 0 ? Color.DarkGray : Color.White,
+                    ColourArea(image, (maze[x, y] & S) == 0 ? Color.DimGray : Color.White,
                         cellX, cellWallY, 
                         cellWallX, cellWallY + wallSize);
 
                     // Bottom Right wall
-                    ColourArea(image, Color.DarkGray,
+                    ColourArea(image, Color.DimGray,
                         cellWallX, cellWallY, 
                         cellWallX + wallSize, cellWallY + wallSize);
                 }
